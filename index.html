@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>COCOJOJOR · Services Informatiques</title>
+
+    <!-- TailwindCSS via CDN -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <!-- Alpine.js via CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js">
+    </script>
+
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome 6 (gratuit) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        /* --- Reset & base --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b0b17;
+            color: #f0f0f5;
+            overflow-x: hidden;
+        }
+
+        /* --- Scrollbar personnalisée --- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #12121f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d97706;
+        }
+
+        /* --- Gradient & animations --- */
+        .bg-gradient-brand {
+            background: linear-gradient(145deg, #0b0b17 0%, #1a1a2e 100%);
+        }
+        .bg-gradient-cta {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        .bg-gradient-cta:hover {
+            background: linear-gradient(135deg, #d97706, #b45309);
+        }
+        .bg-gradient-card {
+            background: linear-gradient(145deg, #141425, #1e1e35);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Effet de brillance sur le hero --- */
+        .hero-glow {
+            position: absolute;
+            top: -40%;
+            right: -20%;
+            width: 70%;
+            height: 120%;
+            background: radial-gradient(ellipse, rgba(245, 158, 11, 0.08), transparent 70%);
+            pointer-events: none;
+            border-radius: 50%;
+            filter: blur(80px);
+        }
+
+        /* --- Cartes services --- */
+        .service-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid rgba(245, 158, 11, 0.08);
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(245, 158, 11, 0.3);
+            box-shadow: 0 20px 40px -12px rgba(245, 158, 11, 0.15);
+        }
+        .service-card .icon-wrap {
+            transition: all 0.3s ease;
+        }
+        .service-card:hover .icon-wrap {
+            transform: scale(1.1);
+        }
+
+        /* --- Badge "qualité" --- */
+        .badge-gold {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        /* --- Input newsletter --- */
+        .newsletter-input {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            color: #f0f0f5;
+        }
+        .newsletter-input:focus {
+            border-color: #f59e0b;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .newsletter-input::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* --- Bouton newsletter --- */
+        .btn-newsletter {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            transition: all 0.3s ease;
+        }
+        .btn-newsletter:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 24px -6px rgba(245, 158, 11, 0.4);
+        }
+
+        /* --- Mobile nav --- */
+        .mobile-nav-open .mobile-nav-panel {
+            transform: translateX(0);
+        }
+        .mobile-nav-open .mobile-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mobile-nav-panel {
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .mobile-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+
+        /* --- Bouton "retour en haut" --- */
+        .back-to-top {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            transform: translateY(20px);
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* --- Lien footer --- */
+        .footer-link {
+            transition: color 0.2s ease;
+        }
+        .footer-link:hover {
+            color: #fbbf24;
+        }
+
+        /* --- Responsive fine --- */
+        @media (max-width: 640px) {
+            .hero-glow {
+                width: 120%;
+                height: 100%;
+                top: -30%;
+                right: -40%;
+            }
+        }
+
+        /* --- Sélection --- */
+        ::selection {
+            background: #f59e0b;
+            color: #0b0b17;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ============================================================ -->
+    <!--                    PAGE PRINCIPALE                             -->
+    <!-- ============================================================ -->
+
+    <div x-data="app()" x-init="init()" class="min-h-screen bg-gradient-brand">
+
+        <!-- ==================== NAVIGATION ==================== -->
+        <header class="fixed top-0 left-0 w-full z-50 border-b border-white/5 bg-[#0b0b17]/95 backdrop-blur-xl">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16 md:h-20">
+
+                    <!-- Logo -->
+                    <a href="#" class="flex items-center gap-2.5 group">
+                        <div class="w-9 h-9 rounded-lg bg-gradient-cta flex items-center justify-center text-white font-extrabold text-sm shadow-lg shadow-amber-500/20">
+                            C
+                        </div>
+                        <div>
+                            <span class="text-white font-extrabold text-lg tracking-tight">COCOJOJOR</span>
+                            <span class="block text-[10px] uppercase tracking-[0.12em] text-amber-400/70 font-medium -mt-0.5">Services informatiques</span>
+                        </div>
+                    </a>
+
+                    <!-- Desktop nav -->
+                    <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+                        <a href="#services" class="text-white/70 hover:text-amber-400 transition-colors">Services</a>
+                        <a href="#pourquoi" class="text-white/70 hover:text-amber-400 transition-colors">Pourquoi nous</a>
+                        <a href="#contact" class="text-white/70 hover:text-amber-400 transition-colors">Contact</a>
+                        <a href="#newsletter" class="text-white/70 hover:text-amber-400 transition-colors">Newsletter</a>
+                        <a href="#contact"
+                        class="ml-2 px-5 py-2 rounded-full bg-gradient-cta text-white text-xs font-bold uppercase tracking-wide shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 transition-all duration-300 hover:scale-105">
+                        <i class="fas fa-phone-alt mr-2"></i>Appeler
+                    </a>
+                </nav>
+
+                <!-- Mobile toggle -->
+                <button @click="mobileOpen = !mobileOpen" class="md:hidden text-white/70 hover:text-white p-1.5 transition-colors" aria-label="Menu">
+                    <i class="fas fa-bars text-xl" x-show="!mobileOpen"></i>
+                    <i class="fas fa-times text-xl" x-show="mobileOpen" x-cloak></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile overlay + panel -->
+        <div class="fixed inset-0 z-40 md:hidden" x-show="mobileOpen" x-cloak x-transition.opacity>
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="mobileOpen = false"></div>
+            <div class="absolute top-0 right-0 h-full w-[280px] bg-[#12121f] border-l border-white/5 shadow-2xl p-6 flex flex-col"
+            x-transition:enter="transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            x-transition:enter-start="translate-x-full"
+            x-transition:enter-end="translate-x-0"
+            x-transition:leave="transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="translate-x-full">
+
+            <!-- Brand dans le menu -->
+            <div class="flex items-center gap-3 pb-6 border-b border-white/5">
+                <div class="w-8 h-8 rounded-lg bg-gradient-cta flex items-center justify-center text-white font-extrabold text-xs">
+                    C
+                </div>
+                <span class="text-white font-bold text-sm">COCOJOJOR</span>
+            </div>
+
+            <!-- Liens -->
+            <nav class="flex-1 flex flex-col gap-1 pt-6">
+                <a href="#services" @click="mobileOpen = false" class="px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium">
+                    <i class="fas fa-cogs w-6 text-amber-400/60"></i>Services
+                </a>
+                <a href="#pourquoi" @click="mobileOpen = false" class="px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium">
+                    <i class="fas fa-star w-6 text-amber-400/60"></i>Pourquoi nous
+                </a>
+                <a href="#contact" @click="mobileOpen = false" class="px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium">
+                    <i class="fas fa-envelope w-6 text-amber-400/60"></i>Contact
+                </a>
+                <a href="#newsletter" @click="mobileOpen = false" class="px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium">
+                    <i class="fas fa-newspaper w-6 text-amber-400/60"></i>Newsletter
+                </a>
+            </nav>
+
+            <!-- CTA mobile -->
+            <div class="pt-6 border-t border-white/5">
+                <a href="#contact" @click="mobileOpen = false" class="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-cta text-white text-sm font-bold shadow-lg shadow-amber-500/20">
+                    <i class="fas fa-phone-alt"></i> Nous appeler
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- ==================== HERO SECTION ==================== -->
+<section class="relative pt-24 md:pt-28 lg:pt-32 overflow-hidden">
+    <div class="hero-glow"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center py-8 md:py-12">
+
+            <!-- Texte hero -->
+            <div>
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/15 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-5">
+                    <i class="fas fa-bolt text-amber-400"></i> IT &amp; solutions numériques
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] tracking-tight">
+                    <span class="text-white">Vos besoins IT,</span><br />
+                    <span class="text-gradient">nos solutions.</span>
+                </h1>
+
+                <p class="mt-5 text-base sm:text-lg text-white/60 leading-relaxed max-w-lg">
+                    Des services informatiques professionnels, rapides et fiables pour
+                    particuliers et entreprises. <span class="text-amber-400/80 font-medium">On est là pour toi !</span>
+                </p>
+
+                <div class="mt-8 flex flex-wrap gap-4">
+                    <a href="#services"
+                    class="px-7 py-3.5 rounded-full bg-gradient-cta text-white font-bold text-sm shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-300 hover:scale-105 flex items-center gap-2">
+                    <i class="fas fa-rocket"></i> Découvrir
+                </a>
+                <a href="#contact"
+                class="px-7 py-3.5 rounded-full border border-white/10 text-white/80 font-medium text-sm hover:bg-white/5 transition-all duration-300 flex items-center gap-2">
+                <i class="fas fa-headset"></i> Assistance
+            </a>
+        </div>
+
+        <!-- Statistiques rapides -->
+        <div class="mt-10 flex gap-8 border-t border-white/5 pt-8">
+            <div>
+                <div class="text-2xl font-extrabold text-amber-400">5+</div>
+                <div class="text-xs text-white/40 uppercase tracking-wider">Services clés</div>
+            </div>
+            <div>
+                <div class="text-2xl font-extrabold text-amber-400">100%</div>
+                <div class="text-xs text-white/40 uppercase tracking-wider">Satisfaction</div>
+            </div>
+            <div>
+                <div class="text-2xl font-extrabold text-amber-400">24/7</div>
+                <div class="text-xs text-white/40 uppercase tracking-wider">Support</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image / illustration hero -->
+    <div class="relative flex justify-center lg:justify-end">
+        <div class="w-full max-w-md lg:max-w-none relative">
+            <!-- Carte "flottante" -->
+            <div class="bg-gradient-card rounded-3xl p-6 md:p-8 border border-white/5 shadow-2xl shadow-amber-500/5">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/5 rounded-2xl p-4 text-center hover:bg-white/10 transition-colors">
+                        <div class="text-3xl mb-2">🛡️</div>
+                        <div class="text-xs font-semibold text-white/80">Protection</div>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-4 text-center hover:bg-white/10 transition-colors">
+                        <div class="text-3xl mb-2">⚡</div>
+                        <div class="text-xs font-semibold text-white/80">Rapide</div>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-4 text-center hover:bg-white/10 transition-colors">
+                        <div class="text-3xl mb-2">🧠</div>
+                        <div class="text-xs font-semibold text-white/80">Intelligent</div>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-4 text-center hover:bg-white/10 transition-colors">
+                        <div class="text-3xl mb-2">😊</div>
+                        <div class="text-xs font-semibold text-white/80">Sympa</div>
+                    </div>
+                </div>
+                <div class="mt-4 text-center text-xs text-white/30 italic">
+                    Toujours là pour protéger vos données
+                </div>
+            </div>
+            <!-- Petite étiquette -->
+            <div class="absolute -bottom-3 -right-3 bg-[#0b0b17] border border-amber-500/20 rounded-full px-4 py-1.5 text-xs font-bold text-amber-400 shadow-xl">
+                <i class="fas fa-check-circle mr-1.5"></i> Fiable
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ==================== SERVICES ==================== -->
+<section id="services" class="py-20 md:py-28 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center max-w-2xl mx-auto mb-14">
+            <span class="inline-block text-xs font-bold uppercase tracking-[0.15em] text-amber-400/70 mb-3">
+                <i class="fas fa-cog mr-2"></i> Nos compétences
+            </span>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-white">
+                Des services IT <span class="text-gradient">complets</span>
+            </h2>
+            <p class="mt-4 text-white/50 text-sm md:text-base">
+                De l'installation à la maintenance, en passant par le dépannage et la vente.
+            </p>
+        </div>
+
+        <!-- Grille -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+
+            <!-- 1 -->
+            <div class="service-card bg-gradient-card rounded-2xl p-6 md:p-7 text-center">
+                <div class="icon-wrap w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-5">
+                    <i class="fas fa-desktop"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Installation Système</h3>
+                <p class="mt-2 text-sm text-white/50 leading-relaxed">
+                    Windows, Linux, macOS &amp; plus. Installation propre et configurée.
+                </p>
+            </div>
+
+            <!-- 2 -->
+            <div class="service-card bg-gradient-card rounded-2xl p-6 md:p-7 text-center">
+                <div class="icon-wrap w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-5">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Logiciels &amp; Apps</h3>
+                <p class="mt-2 text-sm text-white/50 leading-relaxed">
+                    Pack Office, Adobe, jeux PC, antivirus et bien plus.
+                </p>
+            </div>
+
+            <!-- 3 -->
+            <div class="service-card bg-gradient-card rounded-2xl p-6 md:p-7 text-center">
+                <div class="icon-wrap w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-5">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Maintenance</h3>
+                <p class="mt-2 text-sm text-white/50 leading-relaxed">
+                    Optimisation et entretien préventif pour vos équipements.
+                </p>
+            </div>
+
+            <!-- 4 -->
+            <div class="service-card bg-gradient-card rounded-2xl p-6 md:p-7 text-center">
+                <div class="icon-wrap w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-5">
+                    <i class="fas fa-wrench"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Dépannage</h3>
+                <p class="mt-2 text-sm text-white/50 leading-relaxed">
+                    Intervention rapide pour problèmes matériels &amp; logiciels.
+                </p>
+            </div>
+
+            <!-- 5 -->
+            <div class="service-card bg-gradient-card rounded-2xl p-6 md:p-7 text-center">
+                <div class="icon-wrap w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-5">
+                    <i class="fas fa-laptop"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Vente d'ordinateurs</h3>
+                <p class="mt-2 text-sm text-white/50 leading-relaxed">
+                    Matériels, accessoires &amp; périphériques à prix compétitifs.
+                </p>
+            </div>
+
+            <!-- 6 -->
+            <div class="service-card bg-gradient-card rounded-2xl p-6 md:p-7 text-center">
+                <div class="icon-wrap w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-5">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Conseils &amp; Assistance</h3>
+                <p class="mt-2 text-sm text-white/50 leading-relaxed">
+                    Accompagnement personnalisé pour tous vos projets IT.
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Badge supplémentaire -->
+        <div class="mt-12 text-center">
+            <span class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full badge-gold text-sm font-medium">
+                <i class="fas fa-shield-alt"></i>
+                Sécurité &amp; confidentialité garanties
+            </span>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ==================== POURQUOI NOUS ==================== -->
+<section id="pourquoi" class="py-20 md:py-28 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center max-w-2xl mx-auto mb-14">
+            <span class="inline-block text-xs font-bold uppercase tracking-[0.15em] text-amber-400/70 mb-3">
+                <i class="fas fa-medal mr-2"></i> Pourquoi nous
+            </span>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-white">
+                On est <span class="text-gradient">différents</span>
+            </h2>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <!-- 1 -->
+            <div class="bg-gradient-card rounded-2xl p-6 text-center border border-white/5 hover:border-amber-500/20 transition-all duration-300">
+                <div class="text-4xl mb-4">⚡</div>
+                <h4 class="text-lg font-bold text-white">Rapide</h4>
+                <p class="mt-2 text-sm text-white/40">Interventions express, zéro temps mort.</p>
+            </div>
+
+            <!-- 2 -->
+            <div class="bg-gradient-card rounded-2xl p-6 text-center border border-white/5 hover:border-amber-500/20 transition-all duration-300">
+                <div class="text-4xl mb-4">🧠</div>
+                <h4 class="text-lg font-bold text-white">Intelligent</h4>
+                <p class="mt-2 text-sm text-white/40">On analyse, comprend et trouve la meilleure solution.</p>
+            </div>
+
+            <!-- 3 -->
+            <div class="bg-gradient-card rounded-2xl p-6 text-center border border-white/5 hover:border-amber-500/20 transition-all duration-300">
+                <div class="text-4xl mb-4">🛡️</div>
+                <h4 class="text-lg font-bold text-white">Fiable</h4>
+                <p class="mt-2 text-sm text-white/40">Protection de vos données et appareils.</p>
+            </div>
+
+            <!-- 4 -->
+            <div class="bg-gradient-card rounded-2xl p-6 text-center border border-white/5 hover:border-amber-500/20 transition-all duration-300">
+                <div class="text-4xl mb-4">😊</div>
+                <h4 class="text-lg font-bold text-white">Sympa</h4>
+                <p class="mt-2 text-sm text-white/40">Avec le sourire, au quotidien.</p>
+            </div>
+
+        </div>
+
+        <!-- Citation / phrase forte -->
+        <div class="mt-14 text-center bg-white/5 rounded-3xl p-8 md:p-10 border border-white/5 max-w-3xl mx-auto">
+            <p class="text-lg md:text-xl font-medium text-white/80 italic">
+                « Moins de stress, plus de performance. On est là pour toi ! »
+            </p>
+            <div class="mt-3 text-sm text-amber-400/60 font-semibold tracking-wide">
+                — COCOJOJOR Services Informatiques
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ==================== CONTACT ==================== -->
+<section id="contact" class="py-20 md:py-28 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+            <!-- Infos contact -->
+            <div>
+                <span class="inline-block text-xs font-bold uppercase tracking-[0.15em] text-amber-400/70 mb-3">
+                    <i class="fas fa-phone-alt mr-2"></i> Contact
+                </span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white">
+                    On est <span class="text-gradient">à votre écoute</span>
+                </h2>
+                <p class="mt-4 text-white/50 text-sm md:text-base max-w-md">
+                    Une question ? Un problème ? Appelez-nous ou écrivez-nous, on vous répondra rapidement.
+                </p>
+
+                <div class="mt-8 space-y-5">
+                    <!-- Téléphone 1 -->
+                    <div class="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/5 hover:border-amber-500/20 transition-all duration-300">
+                        <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-white/30 uppercase tracking-wider">Téléphone</div>
+                            <a href="tel:+243858636262" class="text-white font-medium hover:text-amber-400 transition-colors">
+                                +243 85 86 36 262
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Téléphone 2 -->
+                    <div class="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/5 hover:border-amber-500/20 transition-all duration-300">
+                        <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-white/30 uppercase tracking-wider">Téléphone</div>
+                            <a href="tel:+243986119037" class="text-white font-medium hover:text-amber-400 transition-colors">
+                                +243 98 61 19 037
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/5 hover:border-amber-500/20 transition-all duration-300">
+                        <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-white/30 uppercase tracking-wider">Email</div>
+                            <a href="mailto:Cocojojor952@gmail.com" class="text-white font-medium hover:text-amber-400 transition-colors">
+                                Cocojojor952@gmail.com
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Site web -->
+                    <div class="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/5 hover:border-amber-500/20 transition-all duration-300">
+                        <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-white/30 uppercase tracking-wider">Site web</div>
+                            <a href="https://cocojojor.com" target="_blank" rel="noopener" class="text-white font-medium hover:text-amber-400 transition-colors">
+                                Cocojojor.com
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bouton CTA -->
+                <div class="mt-8">
+                    <a href="tel:+243858636262" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-gradient-cta text-white font-bold text-sm shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-300 hover:scale-105">
+                        <i class="fas fa-phone"></i> Appelez-nous maintenant
+                    </a>
+                </div>
+            </div>
+
+            <!-- Carte / illustration contact -->
+            <div class="relative">
+                <div class="bg-gradient-card rounded-3xl p-6 md:p-8 border border-white/5 shadow-2xl shadow-amber-500/5">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                        <span class="text-xs text-white/40 font-medium">Disponible 24/7</span>
+                    </div>
+                    <div class="space-y-4 text-sm text-white/60">
+                        <p>
+                            <i class="fas fa-check-circle text-amber-400 mr-2"></i>
+                            Dépannage rapide
+                        </p>
+                        <p>
+                            <i class="fas fa-check-circle text-amber-400 mr-2"></i>
+                            Maintenance professionnelle
+                        </p>
+                        <p>
+                            <i class="fas fa-check-circle text-amber-400 mr-2"></i>
+                            Protection antivirus
+                        </p>
+                        <p>
+                            <i class="fas fa-check-circle text-amber-400 mr-2"></i>
+                            Installation logiciels
+                        </p>
+                        <p>
+                            <i class="fas fa-check-circle text-amber-400 mr-2"></i>
+                            Vente matériels
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-6 border-t border-white/5 text-center text-xs text-white/30">
+                        <i class="fas fa-shield-alt text-amber-400/60 mr-1"></i>
+                        Vos données sont en sécurité
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ==================== NEWSLETTER ==================== -->
+<section id="newsletter" class="py-20 md:py-28 border-t border-white/5">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+
+        <span class="inline-block text-xs font-bold uppercase tracking-[0.15em] text-amber-400/70 mb-3">
+            <i class="fas fa-newspaper mr-2"></i> Newsletter
+        </span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-white">
+            Restez <span class="text-gradient">informé</span>
+        </h2>
+        <p class="mt-4 text-white/50 text-sm md:text-base max-w-lg mx-auto">
+            Recevez nos conseils IT, offres spéciales et actualités directement dans votre boîte mail.
+        </p>
+
+        <!-- Formulaire newsletter -->
+        <div class="mt-10 max-w-lg mx-auto" x-data="newsletterForm()">
+            <form @submit.prevent="submit()" class="flex flex-col sm:flex-row gap-3">
+                <input type="email" x-model="email" required
+                placeholder="Votre adresse email"
+                class="flex-1 newsletter-input rounded-full px-5 py-3.5 text-sm placeholder-white/30 focus:ring-2 focus:ring-amber-500/30" />
+                <button type="submit"
+                class="btn-newsletter px-7 py-3.5 rounded-full text-white font-bold text-sm flex items-center justify-center gap-2 whitespace-nowrap"
+                :disabled="loading">
+                <i class="fas fa-paper-plane" x-show="!loading"></i>
+                <i class="fas fa-spinner fa-spin" x-show="loading" x-cloak></i>
+                <span x-show="!loading">S'abonner</span>
+                <span x-show="loading">Envoi…</span>
+            </button>
+        </form>
+
+        <!-- Message de succès / erreur -->
+        <div x-show="message" x-cloak class="mt-4 text-sm" :class="messageType === 'success' ? 'text-green-400' : 'text-red-400'">
+            <i class="fas" :class="messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'"></i>
+            <span x-text="message"></span>
+        </div>
+
+        <p class="mt-4 text-xs text-white/25">
+            <i class="fas fa-lock mr-1"></i> Vos données sont confidentielles. Désabonnement en 1 clic.
+        </p>
+    </div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ==================== FOOTER ==================== -->
+<footer class="border-t border-white/5 bg-[#0b0b17] pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+
+            <!-- Brand -->
+            <div class="lg:col-span-1">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-cta flex items-center justify-center text-white font-extrabold text-sm shadow-lg shadow-amber-500/20">
+                        C
+                    </div>
+                    <div>
+                        <span class="text-white font-extrabold text-lg tracking-tight">COCOJOJOR</span>
+                        <span class="block text-[10px] uppercase tracking-[0.12em] text-amber-400/60 font-medium -mt-0.5">Services informatiques</span>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-white/30 leading-relaxed max-w-xs">
+                    Des solutions IT professionnelles, rapides et fiables pour tous.
+                </p>
+                <div class="mt-4 flex gap-3">
+                    <a href="#" class="text-white/20 hover:text-amber-400 transition-colors text-lg"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-white/20 hover:text-amber-400 transition-colors text-lg"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white/20 hover:text-amber-400 transition-colors text-lg"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-white/20 hover:text-amber-400 transition-colors text-lg"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <!-- Services rapides -->
+            <div>
+                <h5 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Services</h5>
+                <ul class="space-y-2.5 text-sm">
+                    <li><a href="#" class="footer-link text-white/40 hover:text-amber-400 transition-colors">Installation</a></li>
+                    <li><a href="#" class="footer-link text-white/40 hover:text-amber-400 transition-colors">Maintenance</a></li>
+                    <li><a href="#" class="footer-link text-white/40 hover:text-amber-400 transition-colors">Dépannage</a></li>
+                    <li><a href="#" class="footer-link text-white/40 hover:text-amber-400 transition-colors">Protection</a></li>
+                    <li><a href="#" class="footer-link text-white/40 hover:text-amber-400 transition-colors">Vente</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact rapide -->
+            <div>
+                <h5 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Contact</h5>
+                <ul class="space-y-2.5 text-sm">
+                    <li><a href="tel:+243858636262" class="footer-link text-white/40 hover:text-amber-400 transition-colors">+243 85 86 36 262</a></li>
+                    <li><a href="tel:+243986119037" class="footer-link text-white/40 hover:text-amber-400 transition-colors">+243 98 61 19 037</a></li>
+                    <li><a href="mailto:Cocojojor952@gmail.com" class="footer-link text-white/40 hover:text-amber-400 transition-colors">Cocojojor952@gmail.com</a></li>
+                    <li><a href="#" class="footer-link text-white/40 hover:text-amber-400 transition-colors">Cocojojor.com</a></li>
+                </ul>
+            </div>
+
+            <!-- Heures / tagline -->
+            <div>
+                <h5 class="text-white font-bold text-sm uppercase tracking-wider mb-4">À propos</h5>
+                <p class="text-sm text-white/30 leading-relaxed">
+                    Toujours là pour protéger vos données et vos appareils.
+                </p>
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <span class="inline-block px-3 py-1 rounded-full bg-amber-500/10 text-amber-400/70 text-[10px] font-bold uppercase tracking-wider">Rapide</span>
+                    <span class="inline-block px-3 py-1 rounded-full bg-amber-500/10 text-amber-400/70 text-[10px] font-bold uppercase tracking-wider">Fiable</span>
+                    <span class="inline-block px-3 py-1 rounded-full bg-amber-500/10 text-amber-400/70 text-[10px] font-bold uppercase tracking-wider">Sympa</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bas de footer -->
+        <div class="mt-12 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-white/20">
+            <span>© 2026 COCOJOJOR Services Informatiques. Tous droits réservés.</span>
+            <span>Fait avec <i class="fas fa-heart text-amber-400/40 text-xs"></i> à Kinshasa</span>
+        </div>
+
+    </div>
+</footer>
+
+<!-- ==================== BOUTON RETOUR EN HAUT ==================== -->
+<button @click="window.scrollTo({top:0,behavior:'smooth'})"
+class="back-to-top fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-amber-500 text-[#0b0b17] shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 transition-all duration-300 hover:scale-105 flex items-center justify-center text-lg"
+:class="scrollY > 400 ? 'visible' : ''"
+aria-label="Retour en haut">
+<i class="fas fa-arrow-up"></i>
+</button>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- ==================== ALPINE.JS APP ==================== -->
+<script>
+    function app() {
+        return {
+            mobileOpen: false,
+            scrollY: 0,
+
+            init() {
+                // Écoute du scroll pour le bouton "retour en haut"
+                window.addEventListener('scroll', () => {
+                    this.scrollY = window.scrollY;
+                }, { passive: true });
+
+                // Fermer le menu mobile au resize > md
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth >= 768) this.mobileOpen = false;
+                });
+            }
+        }
+    }
+
+    // === Newsletter form (Alpine component) ===
+    function newsletterForm() {
+        return {
+            email: '',
+            loading: false,
+            message: '',
+            messageType: 'success',
+
+            submit() {
+                if (!this.email || !this.email.includes('@')) {
+                    this.message = 'Veuillez entrer une adresse email valide.';
+                    this.messageType = 'error';
+                    return;
+                }
+
+                this.loading = true;
+                this.message = '';
+
+                // Simulation d'envoi (remplacez par votre endpoint)
+                setTimeout(() => {
+                    this.loading = false;
+                    this.message = '✅ Merci ! Vous êtes bien abonné à notre newsletter.';
+                    this.messageType = 'success';
+                    this.email = '';
+                }, 1200);
+            }
+        }
+    }
+</script>
+
+<!-- ============================================================ -->
+<!-- ==================== X-CLOAK (cacher avant Alpine) ==================== -->
+<style>
+    [x-cloak] {
+        display: none !important;
+    }
+</style>
+
+</body>
+</html>
